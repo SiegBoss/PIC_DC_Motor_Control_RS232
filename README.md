@@ -48,8 +48,8 @@ This project uses a PIC16F877A microcontroller to control the speed of a DC moto
 - .cof file for debugging
 
 ## Connection Diagram
-A PNG image is included that shows the connection diagram between the components
-The simulation performed in Proteus is also added
+- A PNG image is included that shows the connection diagram between the components
+- The simulation performed in Proteus is also added
 
 ## License
 This project is under the MIT license. Check the LICENSE file for more details.
