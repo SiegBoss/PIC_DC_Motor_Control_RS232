@@ -11,44 +11,42 @@
 // Variables
 char characters[3];
 char c = '%';
-
-int y = 0;
+int i = 0;
 int16 speed;
-float speedReaded, speedInt;
+float speedReaded, speedEngine;
 
 // Funcion para imprimir en el LCD y en la PC | Function to print on the LCD and on the PC
-void imprimir()
+void printText()
 {
     // Mandar msj al LCD | Send msg to LCD
     lcd_gotoxy(1, 1);
     printf(lcd_putc, " .: Motor CD :.");
     lcd_gotoxy(1, 2);
-    printf(lcd_putc, "Velocidad=%3.0f%c ", speedReaded, c);
+    printf(lcd_putc, "Vel.=%3.0f%c ", speedReaded, c);
 
     // Mandar msj a la PC | Send msg to PC
     printf("\f .: Control de Velocidad de un Motor de CD Mediante La PC :.\n\n\r");
-    printf(".: Ingrese la Velocidad Deseada de 0 a 100 y Presione Enter :.\n\n\r");
-    printf("Dato Recivido = %3.0f\n\n\r", speedReaded);
-    printf("Velocidad = %3.0f  %c\n\n\r", speedReaded, c);
+    printf(".: Ingrese la Velocidad Deseada de 0 a 100 i Presione Enter :.\n\n\r");
+    printf("Velocidad = %3.0f%c\n\n\r", speedReaded, c);
     printf("Ingrese la Velocidad del Motor = ");
 }
 
 // Funcion de interrupcion | Interruption function
-// int_ext: Interrupcion por flanco de bajada
+// int_ext: Interrupcion por flanco de bajada | Interruption by falling edge
 #int_ext
-void Paro()
+void emergencyStop()
 {
-    y++;
+    i++;
 }
 
 // Funcion de interrupcion | Interruption function
-// int_rda: Interrupcion por recepcion de datos
+// int_rda: Interrupcion por recepcion de datos | Interruption by data reception
 #int_rda
-void motor()
+void engine()
 {
-    // Leer el dato que se recibe
+    // Leer el dato que se recibe | Read the data that is received
     gets(characters);
-    // Convertir el dato a entero
+    // Convertir el dato a entero | Convert the data to integer
     speedReaded = atoi(characters);
     
     // Si el dato es mayor a 100, se le asigna 100 | If the data is greater than 100, 100 is assigned
@@ -62,10 +60,12 @@ void motor()
         speedReaded = 0;
     }
 
-    // multiplicar por 10 para que sea de 0 a 100
-    speedInt = (speedReaded) * (10);
-    imprimir();
-    y = 0;
+    // Multiplicar por 10 para que sea de 0 a 100 | Multiply by 10 to make it from 0 to 100
+    speedEngine = (speedReaded) * (10);
+    // Imprimir texto | Print text
+    printText();
+    // Si el dato es 0, el motor se detiene | If the data is 0, the motor stops
+    i = 0;
 }
 
 // Funcion principal | Main function
@@ -79,17 +79,18 @@ void main()
     enable_interrupts(int_rda);
     enable_interrupts(global);
 
-    // Configuracion del LCD
+    // Configuracion del LCD | LCD configuration
     lcd_init();
-    imprimir();
+    // Imprimir texto | Print text
+    printText();
 
     // Ciclo infinito | Infinite cycle
     while (true)
     {
         // Si es igual a 0, el motor gira | If it is equal to 0, the motor rotates
-        if (y == 0)
+        if (i == 0)
         {
-            speed = speedInt;
+            speed = speedEngine;
 
             output_high(PIN_B1);
             delay_ms(speed);
